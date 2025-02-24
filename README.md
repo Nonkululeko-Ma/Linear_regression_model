@@ -56,6 +56,15 @@ Challenges Faced
 - How to properly manage GitHub repositories
 
 
-
 This was a fun project to learn how to use **Rust** for simple AI models.
 
+ # Submission 
+ Submission
+
+The complete source code is available on GitHub at https://....name and username.
+
+The Cargo.toml file remains unchanged.
+
+This README.md file documents the entire process.
+
+The project was submitted via Blackboard LMS
