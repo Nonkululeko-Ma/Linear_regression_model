@@ -1,11 +1,28 @@
-use textplots::{Chart, Plot, Shape};
 
-fn plot_results(data: &[(f32, f32)], model: &LinearRegression) {
-    let plot_data: Vec<(f32, f32)> = data.iter()
-        .map(|&(x, _)| (x, model.forward(&Tensor::from_data(Data::from([x]))).to_data().value[0]))
-        .collect();
+use burn::tensor::{Tensor, TensorData, Device};
+use burn_ndarray::NdArray;
+use textplots::{Chart, Shape};
 
-    Chart::new(100, 30, 0.0, 10.0)
-        .lineplot(&Shape::Points(&plot_data))
+use crate::model::LinearRegression;
+
+
+
+pub fn evaluate_model(model: &LinearRegression) {
+    let x_test: Vec<f32> = (-10..10).map(|x| x as f32).collect();
+    let device = Device::<NdArray>::default();
+    let x_tensor = Tensor::<NdArray, 1>::from_data(TensorData::new(x_test.clone(), [x_test.len()]), &device);
+
+    let predictions = model.forward(x_tensor).into_data().to_vec();
+
+    println!("Testing Model Performance:");
+
+    Chart::new(100, 40, -10.0, 10.0);
+
+    let points: Vec<(f32, f32)> = x_test.iter().cloned().zip(predictions.iter().map(|y| y[0])).collect();
+
+    Chart::new(100, 40, -10.0, 10.0)
+        .lineplot(&Shape::Lines(&points))
         .display();
+
+
 }

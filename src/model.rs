@@ -1,22 +1,30 @@
-use burn::tensor::backend::Backend;
-use burn::tensor::{Tensor, Data};
-use burn::module::Module;
+use burn::prelude::*;
+use burn::nn::{Linear};
+use burn_ndarray::NdArray;
+
+
 
 #[derive(Module, Debug)]
-struct LinearRegression {
-    weight: Tensor<f32>,
-    bias: Tensor<f32>,
+pub struct LinearRegression {
+    layer: Linear<NdArray>,
 }
 
 impl LinearRegression {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
-            weight: Tensor::from_data(Data::from([0.0])),
-            bias: Tensor::from_data(Data::from([0.0])),
+            layer: Linear::new(1, 1),
+
         }
     }
 
-    fn forward(&self, x: &Tensor<f32>) -> Tensor<f32> {
-        &self.weight * x + &self.bias
+    pub fn forward(&self, x: Tensor<NdArray, 1>) -> Tensor<NdArray, 1> {
+        self.layer.forward(x)
     }
 }
+
+fn mean_squared_error(predictions: &Tensor<NdArray, 1>, targets: &Tensor<NdArray, 1>) -> Tensor<NdArray, 1> {
+    let diff = predictions.sub(targets);
+    let squared_diff = diff.mul(&diff);
+    squared_diff.mean()
+}
+
